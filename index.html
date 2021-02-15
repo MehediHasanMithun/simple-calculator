@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <input type="button" value="0" class="form-control" id="display-bar">
+                <div class="calc-body">
+                    <div class="d-flex justify-content-between">
+                        <div class="number button">7</div>
+                        <div class="number button">8</div>
+                        <div class="number button">9</div>
+                        <div class="operation button">/</div>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <div class="number button">6</div>
+                        <div class="number button">5</div>
+                        <div class="number button">4</div>
+                        <div class="operation button">*</div>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <div class="number button">3</div>
+                        <div class="number button">2</div>
+                        <div class="number button">1</div>
+                        <div class="operation button">-</div>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <div id="clear" class="button">C</div>
+                        <div class="number button">0</div>
+                        <div class="operation button">=</div>
+                        <div class="operation button">+</div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        //Initialize Variable
+        let previousValue = [];
+        let currentValue = 0;
+        let operationSign;
+        let flag = 0;
+        let anotherFlag = 0;
+        let previousIndex = 0;
+        
+        //when button clicked the backgroundColor changed
+        const buttonBg = document.getElementsByClassName("button");
+        for (let index = 0; index < buttonBg.length; index++) {
+            const element = buttonBg[index];
+            element.addEventListener("click", function () {
+                if (buttonBg[previousIndex].innerHTML == 'C')
+                    document.getElementsByClassName("button")[previousIndex].style.backgroundColor = "tomato";
+                else
+                    document.getElementsByClassName("button")[previousIndex].style.backgroundColor = "white";
+
+                if (buttonBg[index].innerHTML == 'C')
+                    document.getElementsByClassName("button")[index].style.backgroundColor = "tomato";
+                else
+                    document.getElementsByClassName("button")[index].style.backgroundColor = "gray";
+
+                previousIndex = index;
+            });
+        }
+
+        //Number clicked Handler
+        const numberHandler = document.getElementsByClassName("number");
+        for (let index = 0; index < numberHandler.length; index++) {
+            const element = numberHandler[index];
+            element.addEventListener("click", function () {
+
+                anotherFlag = 1;
+                let pressNumber = element.innerHTML;
+                let displayBarValue = document.getElementById("display-bar").value;
+                if (displayBarValue.length == 1 && displayBarValue[0] == '0') {
+                    displayBarValue = "";
+                }
+                if (flag == 1) {
+                    displayBarValue = "";
+                    flag = 0;
+                }
+                displayBarValue = displayBarValue + pressNumber;
+                document.getElementById("display-bar").value = displayBarValue;
+            });
+        }
+
+        //clear clicked Handler
+        document.getElementById("clear").addEventListener("click", function () {
+            document.getElementById("display-bar").value = "0";
+            previousValue = [];
+            currentValue = "0";
+            operationSign = "";
+            flag = 0;
+        });
+
+        //All operation such as +,-,/,* handler
+        const operationHandler = document.getElementsByClassName("operation");
+        for (let index = 0; index < operationHandler.length; index++) {
+            const element = operationHandler[index];
+            element.addEventListener("click", function () {
+                const operation = element.innerHTML;
+                if (anotherFlag != 0) {
+                    let previousValueString = document.getElementById("display-bar").value;
+                    previousValue.push(parseFloat(previousValueString));
+                    flag = 1;
+                    let valueOne, valueTwo, result;
+                    let valueLength = previousValue.length;
+                    if (valueLength > 1) {
+                        valueTwo = previousValue[valueLength - 1];
+                        valueOne = previousValue[valueLength - 2];
+
+                        if (operation == '=') {
+                            if (operationSign == '+') {
+                                result = valueOne + valueTwo;
+                            }
+                            else if (operationSign == '-') {
+                                result = valueOne - valueTwo;
+                            }
+                            else if (operationSign == '*') {
+                                result = valueOne * valueTwo;
+                            }
+                            else if (operationSign == '/') {
+                                result = valueOne / valueTwo;
+                            }
+                        }
+                        else {
+                            if (operationSign == '+') {
+                                result = valueOne + valueTwo;
+                            }
+                            else if (operationSign == '-') {
+                                result = valueOne - valueTwo;
+                            }
+                            else if (operationSign == '*') {
+                                result = valueOne * valueTwo;
+                            }
+                            else if (operationSign == '/') {
+                                result = valueOne / valueTwo;
+                            }
+                        }
+                        previousValue.push(result);
+                        if (previousValue.length > 4)
+                            previousValue.shift();
+                        previousValue.shift();
+                        document.getElementById("display-bar").value = result;
+                    }
+                }
+                if (operation != '=')
+                    operationSign = operation;
+                anotherFlag = 0;
+            });
+        }
+
+
+
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
